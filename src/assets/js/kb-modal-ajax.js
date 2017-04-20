@@ -31,7 +31,7 @@
     function ModalAjax(element, options) {
         this.element = element;
         this.init(options);
-    };
+    }
 
     ModalAjax.prototype.init = function (options) {
         this.selector = options.selector || null;
