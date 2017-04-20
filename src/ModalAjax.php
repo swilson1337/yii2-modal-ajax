@@ -60,7 +60,7 @@ class ModalAjax extends Modal
      * Submit the form via ajax
      * @var boolean
      */
-    public $autoClose = false;
+    public $autoClose = true;
 
     /**
      * @var string
@@ -185,20 +185,18 @@ class ModalAjax extends Modal
         }
 
         if ($this->pjaxContainer) {
-            $expression[] = "$.pjax.reload({container : '$this->pjaxContainer'});";
+            $this->events['hidden.bs.modal'] = "function(event) { $.pjax.reload({container : '$this->pjaxContainer'}); }";
         }
 
         $script = implode("\r\n", $expression);
 
-        $this->events = [
-            self::EVENT_MODAL_SUBMIT => new JsExpression("
-                function(event, data, status, xhr) {
-                    if(status){
-                        $script
-                    }
+        $this->events[self::EVENT_MODAL_SUBMIT] = new JsExpression("
+            function(event, data, status, xhr) {
+                if(status){
+                    $script
                 }
-            ")
-        ];
+            }
+        ");
     }
 
     /**
