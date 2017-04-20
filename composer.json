@@ -8,7 +8,7 @@
     "ajax-modal"
   ],
   "homepage": "https://github.com/swilson1337/yii2-modal-ajax",
-  "version": "2.1",
+  "minimum-stability": "stable",
   "type": "yii2-extension",
   "license": "MIT",
   "authors": [
