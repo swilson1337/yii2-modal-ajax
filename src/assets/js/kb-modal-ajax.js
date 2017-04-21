@@ -184,6 +184,13 @@
                     this.injectHtml(data);
                     status = false;
                 }
+				else if (typeof data == "object" && data.msg != null && data.msg != '' && jQuery.notify != null)
+				{
+					jQuery.notify(data.msg, {
+						className: "success",
+						position: "top right"
+					});
+				}
                 jQuery(this.element).triggerHandler('kbModalSubmit', [data, status, xhr, this.selector]);
             }
         });
