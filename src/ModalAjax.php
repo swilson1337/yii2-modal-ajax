@@ -121,10 +121,8 @@ class ModalAjax extends Modal
                 $this->registerMultyModal($id, $view);
                 break;
         }
-
-        if (!isset($this->events[self::EVENT_MODAL_SUBMIT])) {
-            $this->defaultSubmitEvent();
-        }
+		
+		$this->defaultSubmitEvent();
 
         $this->registerEvents($id, $view);
     }
@@ -160,10 +158,11 @@ class ModalAjax extends Modal
                 var bs_url = $(this).attr('href');
                 var title = $(this).attr('title');
                 
-                if (!title) title = ' ';
-                
-                jQuery('#$id').find('.modal-header span').html(title);
-                
+                if (title != null && title != '')
+				{
+					jQuery('#$id').find('.modal-header span').html(title);
+				}
+				
                 jQuery('#$id').kbModalAjax({
                     selector: $(this),
                     url: bs_url,
@@ -181,22 +180,22 @@ class ModalAjax extends Modal
         $expression = [];
 
         if ($this->autoClose) {
-            $expression[] = "$(this).modal('toggle');";
+            $expression[] = "$(this).modal('hide');";
         }
 
         if ($this->pjaxContainer) {
-            $this->events['hidden.bs.modal'] = "function(event) { $.pjax.reload({container : '$this->pjaxContainer'}); }";
+            $this->events[] = ["hidden.bs.modal", "function(event) { $.pjax.reload({container : '$this->pjaxContainer'}); }"];
         }
 
         $script = implode("\r\n", $expression);
 
-        $this->events[self::EVENT_MODAL_SUBMIT] = new JsExpression("
+        $this->events[] = [self::EVENT_MODAL_SUBMIT, new JsExpression("
             function(event, data, status, xhr) {
                 if(status){
                     $script
                 }
             }
-        ");
+        ")];
     }
 
     /**
@@ -206,8 +205,8 @@ class ModalAjax extends Modal
     protected function registerEvents($id, $view)
     {
         $js = [];
-        foreach ($this->events as $event => $expression) {
-            $js[] = ".on('$event', $expression)";
+        foreach ($this->events as $event) {
+            $js[] = ".on('".$event[0]."', ".$event[1].")";
         }
 
         if ($js) {
