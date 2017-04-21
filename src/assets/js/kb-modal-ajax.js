@@ -55,11 +55,15 @@
                 jQuery(this.element).triggerHandler('kbModalBeforeShow', [xhr, settings]);
             },
             success: function (data, status, xhr) {
-                this.injectHtml(data);
-                if (this.ajaxSubmit) {
-                    jQuery(this.element).off('submit').on('submit', this.formSubmit.bind(this));
-                }
-                jQuery(this.element).triggerHandler('kbModalShow', [data, status, xhr, this.selector]);
+				var self = this;
+				
+                this.injectHtml(data, function()
+				{
+					if (self.ajaxSubmit) {
+						jQuery(self.element).off('submit').on('submit', self.formSubmit.bind(self));
+					}
+					jQuery(self.element).triggerHandler('kbModalShow', [data, status, xhr, self.selector]);
+				});
             }
         });
     };
@@ -68,7 +72,7 @@
      * Injects the form of given html into the modal and extecutes css and js
      * @param  {string} html the html to inject
      */
-    ModalAjax.prototype.injectHtml = function (html) {
+    ModalAjax.prototype.injectHtml = function (html, callback) {
         // Find form and inject it
         var form = jQuery(html).filter('form');
 
@@ -76,8 +80,6 @@
         if (jQuery(this.element).find('form').length > 0) {
             jQuery(this.element).find('form').off().yiiActiveForm('destroy').remove();
         }
-
-        jQuery(this.element).find('.modal-body').html(html);
 
         var knownScripts = getPageScriptTags();
         var knownCssLinks = getPageCssLinks();
@@ -119,24 +121,45 @@
                 newScripts.push(src);
             }
         });
+		
+		var injectionElement = jQuery(this.element).find('.modal-body')[0];
+		
+		var doInjection = function()
+		{
+			injectionElement.innerHTML = html;
+			
+			// Execute inline scripts
+			for (var i = 0; i < inlineInjections.length; i += 1) {
+				window.eval(inlineInjections[i]);
+			}
+			
+			if (callback != null)
+			{
+				callback();
+			}
+		};
+		
+		if (newScripts.length > 0)
+		{
+			/**
+			 * Scripts loaded callback
+			 */
+			var scriptLoaded = function () {
+				loadedScriptsCount += 1;
+				if (loadedScriptsCount === newScripts.length) {
+					doInjection();
+				}
+			};
 
-        /**
-         * Scripts loaded callback
-         */
-        var scriptLoaded = function () {
-            loadedScriptsCount += 1;
-            if (loadedScriptsCount === newScripts.length) {
-                // Execute inline scripts
-                for (var i = 0; i < inlineInjections.length; i += 1) {
-                    window.eval(inlineInjections[i]);
-                }
-            }
-        };
-
-        // Load each script tag
-        for (var i = 0; i < newScripts.length; i += 1) {
-            jQuery.getScript(newScripts[i] + (new Date().getTime()), scriptLoaded);
-        }
+			// Load each script tag
+			for (var i = 0; i < newScripts.length; i += 1) {
+				jQuery.getScript(newScripts[i] + (new Date().getTime()), scriptLoaded);
+			}
+		}
+		else
+		{
+			doInjection();
+		}
     };
 
     /**
