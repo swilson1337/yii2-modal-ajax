@@ -45,6 +45,12 @@
      * modal is shown
      */
     ModalAjax.prototype.shown = function () {
+		
+		if (jQuery(this.element).hasClass('in'))
+		{
+			return;
+		}
+		
         // Clear original html before loading
         jQuery(this.element).find('.modal-body').html('');
 
