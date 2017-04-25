@@ -36,7 +36,8 @@
     ModalAjax.prototype.init = function (options) {
         this.selector = options.selector || null;
         this.initalRequestUrl = options.url;
-        this.ajaxSubmit = options.ajaxSubmit || true;
+        this.ajaxSubmit = ((options.ajaxSubmit != null) ? options.ajaxSubmit : true);
+		
         jQuery(this.element).on('show.bs.modal', this.shown.bind(this));
     };
 
@@ -68,6 +69,7 @@
 					if (self.ajaxSubmit) {
 						jQuery(self.element).off('submit').on('submit', self.formSubmit.bind(self));
 					}
+					
 					jQuery(self.element).triggerHandler('kbModalShow', [data, status, xhr, self.selector]);
 				});
             }
