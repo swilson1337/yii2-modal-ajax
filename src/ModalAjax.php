@@ -138,7 +138,7 @@ class ModalAjax extends Modal
         $view->registerJs("
             jQuery('#$id').kbModalAjax({
                 url: '$url',
-                ajaxSubmit: $this->ajaxSubmit
+                ajaxSubmit: ".($this->ajaxSubmit ? "true" : "false")."
             });
         ");
     }
@@ -166,7 +166,7 @@ class ModalAjax extends Modal
                 jQuery('#$id').kbModalAjax({
                     selector: $(this),
                     url: bs_url,
-                    ajaxSubmit: $this->ajaxSubmit
+                    ajaxSubmit: ".($this->ajaxSubmit ? "true" : "false")."
                 });
             });
         ");
