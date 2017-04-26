@@ -151,7 +151,6 @@ class ModalAjax extends Modal
     {
         $view->registerJs("
             jQuery('body').on('click', '$this->selector', function(e) {
-                e.preventDefault();
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#$id');
                 
@@ -184,7 +183,7 @@ class ModalAjax extends Modal
         }
 
         if ($this->pjaxContainer) {
-            $this->events[] = ["hidden.bs.modal", "function(event) { $.pjax.reload({container : '$this->pjaxContainer'}); }"];
+            $this->events[] = ["hidden.bs.modal", "function(event) { $.pjax.reload('$this->pjaxContainer'); }"];
         }
 
         $script = implode("\r\n", $expression);
