@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class ModalAjax
@@ -66,6 +67,10 @@ class ModalAjax extends Modal
      * @var string
      */
     protected $mode = self::MODE_SINGLE;
+    
+    private $_defaultOptions = [
+        'tabindex' => false,
+    ];
 
     /**
      * Renders the header HTML markup of the modal
@@ -90,7 +95,10 @@ class ModalAjax extends Modal
      */
     public function init()
     {
+        $this->options = ArrayHelper::merge($this->_defaultOptions, $this->options);
+        
         parent::init();
+        
         if (!$this->url && !$this->selector) {
             throw new InvalidConfigException('Not specified property "Url" or "Selector"');
         }
