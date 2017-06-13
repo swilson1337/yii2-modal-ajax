@@ -173,9 +173,9 @@
     /**
      * Adds event handlers to the form to check for submit
      */
-    ModalAjax.prototype.formSubmit = function () {
-        var form = jQuery(this.element).find('form');
-
+    ModalAjax.prototype.formSubmit = function (e) {
+		var form = jQuery(e.target);
+		
         // Convert form to ajax submit
         jQuery.ajax({
             method: form.attr('method'),
