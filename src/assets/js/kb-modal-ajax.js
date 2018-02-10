@@ -53,7 +53,7 @@
 		}
 		
         // Clear original html before loading
-        jQuery(this.element).find('.modal-body').html('');
+        jQuery(this.element).find('.modal-body').html('<div class="modal-ajax-loader"></div>');
 
         jQuery.ajax({
             url: this.initalRequestUrl,
