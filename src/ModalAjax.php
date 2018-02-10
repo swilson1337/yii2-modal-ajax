@@ -71,6 +71,11 @@ class ModalAjax extends Modal
     private $_defaultOptions = [
         'tabindex' => false,
     ];
+    
+    private $_defaultClientOptions = [
+        'backdrop' => 'static',
+        'keyboard' => false,
+    ];
 
     /**
      * Renders the header HTML markup of the modal
@@ -96,6 +101,8 @@ class ModalAjax extends Modal
     public function init()
     {
         $this->options = ArrayHelper::merge($this->_defaultOptions, $this->options);
+        
+        $this->clientOptions = ArrayHelper::merge($this->_defaultClientOptions, $this->clientOptions);
         
         parent::init();
         
