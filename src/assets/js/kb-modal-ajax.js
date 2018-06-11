@@ -183,6 +183,8 @@
             data: form.serialize(),
             context: this,
             beforeSend: function (xhr, settings) {
+				form.children(':submit').attr('disabled', true);
+				
                 jQuery(this.element).triggerHandler('kbModalBeforeSubmit', [xhr, settings]);
             },
             success: function (data, status, xhr) {
